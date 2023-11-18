@@ -1,36 +1,17 @@
 const fs = require("fs")
 
-//const filePath = "./practicaFileSystem.json"
+// const filePath = "./practicaFileSystem.json"
+const filePath = process.argv[2]
 
-// fs.readFile(filePath, "utf-8", (err, data)=>{
-//     if (err){
-//         throw err
-//         console.log(data)
-//         return
-//     } 
 
-//     let objeto = JSON.parse(data)
-//     objeto.read = "true"
+fs.readFile(filePath, "utf-8", (err, data)=>{
+    if (err) throw err
 
-//     const jsonString = JSON.stringify(objeto, null, 2) 
+    let objet = JSON.parse(data)
+    objet.read = true
     
-//     fs.writeFile(filePath, jsonString, "utf-8", (err)=>{
-//         if(err){
-//             console.error("Error al escribir en el archivo", err)
-//             return
-//         }
-//         console.log("Nueva clave agregada exitosamente")
-//     })
-// })
-
-
-let pathJson = "./practicaFileSystem.json"
-
-let appendRead = (pathJson)=>{
-    fs.readFile( `${pathJson}`, "utf-8", (err, data)=>{
-        if (err) throw err
-        console.log(data)
+    fs.writeFile(filePath, JSON.stringify(objet), (err)=>{
+        if(err) throw err
+        console.log("Nueva clave agregada exitosamente")
     })
-}
-
-console.log(appendRead(pathJson))
+})
