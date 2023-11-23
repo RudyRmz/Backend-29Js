@@ -1,0 +1,22 @@
+{
+  "name": "myapp",
+  "version": "1.0.0",
+  "description": "primer app con Node",
+  "main": " app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RudyRmz/Backend-29Js.git"
+  },
+  "author": "Rodolfo Ramirez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RudyRmz/Backend-29Js/issues"
+  },
+  "homepage": "https://github.com/RudyRmz/Backend-29Js#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
