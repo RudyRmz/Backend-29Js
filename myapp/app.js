@@ -9,11 +9,12 @@ const port = 3000
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.use((resp, req, res, next)=>{
-    res.status(resp.status).send(resp.send)
-})
 
 app.use("/user", userRoutes)
+
+app.use((resp, req, res, next) => {
+    res.status(resp.status).send(resp.send)
+})
 
 app.get('/', (req, res) => {
     res.send('Hello World!')

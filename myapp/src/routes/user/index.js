@@ -5,27 +5,27 @@ const fs = require("fs")
 const { send } = require("process")
 
 
-router.get('/hi', (req, res) => {
-    res.status(201).send('Hello World Get Router!')
-})
+// router.get('/hi', (req, res) => {
+//     res.status(201).send('Hello World Get Router!')
+// })
 
 // router.get('/:id', (req, res) => {
 //     console.log(req.params)
 //     res.status(201).send(`Hello World Get Router Params ${req.params.id}!`)
 // })
 
-router.get('/getbyid/:id',  (req, res) => {
+router.get('/getbyid/:id',  (req, res, next) => {
     const { id } = req.params
     fs.readFile(users, 'utf-8', (err, users) => {
-        if (err) return res.status(400).send({msg: "No se pudo abrir el archivo", err: err})
+        if (err) next({status:400, send:{msg: "No se pudo abrir el archivo", err: err} })
         users = JSON.parse(users)
         
         users.forEach(u => {
             if (u.id == id) {
-                return res.send({msg: "Usuario encontrado", data: u})
+                next({status: 200, send:{msg: "Usuario encontrado", data: u}})
             }
         });
-        return res.status(404).send({msg: "Usuario no encontrado"})
+        next({status:404, send:{msg: "Usuario no encontrado", err: err} })
     })
 })
 
@@ -36,16 +36,19 @@ router.get('/getall/',  (req, res, next) => {
         //return res.status(400).send({msg: "No se pudo abrir el archivo", err: err})
         users = JSON.parse(users)
         if(users){
-            return res.send({msg: "Usuario encontrado", data: users})
+            next({status:200, send:{msg: "Usuarios encontrado", data: users}})
+            //return res.send({msg: "Usuario encontrado", data: users})
         } else {
-            return res.status(404).send({msg: "Usuarios no encontrados"})
+            next({status: 404, send:{msg: "Usuarios no encontrados"}})
+            //return res.status(404).send({msg: "Usuarios no encontrados"})
         }
     })
 })
 
-router.post("/post", (req, res)=>{
+router.post("/post", (req, res, next)=>{
     fs.readFile("./src/db/users.json", 'utf-8', (err, users) => {
-        if (err) return res.status(400).send({msg: "No se pudo agregar nuevo usuario", err: err})
+        if (err) next({status: 400, send: {msg: "No se pudo agregar nuevo usuario", err: err}})
+        //return res.status(400).send({msg: "No se pudo agregar nuevo usuario", err: err})
         //users = JSON.parse(users)
 
         users = JSON.parse(users)
@@ -64,19 +67,22 @@ router.post("/post", (req, res)=>{
     let newObjet = JSON.stringify(users)
 
     fs.writeFile("./src/db/users.json", newObjet, (err)=>{
-        if (err) return res.status(400).send({msg: "No se pudo agregar nuevo usuario", err: err})
+        if (err) next({status: 400, send:{msg: "No se pudo agregar nuevo usuario", err: err} })
+        //return res.status(400).send({msg: "No se pudo agregar nuevo usuario", err: err})
         //console.log("Archivo guardado correctamente")
         
-        return res.send({msg: "Usuario agregado", data: users})
+        next({status: 201, send:{msg: "Usuario agregado", data: users}})
+        //return res.send({msg: "Usuario agregado", data: users})
     } )
     })
 })
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', (req, res, next) => {
     const { id } = req.params;
 
     fs.readFile("./src/db/users.json", 'utf-8', (err, data) => {
-        if (err) return res.status(400).send({ msg: "No se pudo abrir el archivo", err: err });
+        if (err) next({status:400, send:{ msg: "No se pudo abrir el archivo", err: err } })
+        //return res.status(400).send({ msg: "No se pudo abrir el archivo", err: err });
 
         let users = JSON.parse(data);
 
@@ -84,21 +90,25 @@ router.delete('/delete/:id', (req, res) => {
 
         if (filteredUsers.length < users.length) {
             fs.writeFile("./src/db/users.json", JSON.stringify(filteredUsers), (err) => {
-                if (err) return res.status(400).send({ msg: "No se pudo eliminar el usuario", err: err });
+                if (err) next({status: 400, send:{ msg: "No se pudo eliminar el usuario", err: err } })
+                //return res.status(400).send({ msg: "No se pudo eliminar el usuario", err: err });
 
-                return res.send({ msg: "Usuario eliminado correctamente" });
+                next({status: 200, send: { msg: "Usuario eliminado correctamente" }})
+                //return res.send({ msg: "Usuario eliminado correctamente" });
             });
         } else {
-            return res.status(404).send({ msg: "Usuario no encontrado" });
+            next({status: 404, send:{ msg: "Usuario no encontrado" }})
+            //return res.status(404).send({ msg: "Usuario no encontrado" });
         }
     });
 });
 
-router.put('/put/:id', (req, res) => {
+router.put('/put/:id', (req, res, next) => {
     const { id } = req.params;
 
     fs.readFile("./src/db/users.json", 'utf-8', (err, data) => {
-        if (err) return res.status(400).send({ msg: "No se pudo abrir el archivo", err: err });
+        if (err) next({status: 400, send:{ msg: "No se pudo abrir el archivo", err: err } })
+        //return res.status(400).send({ msg: "No se pudo abrir el archivo", err: err });
 
         let users = JSON.parse(data);
 
@@ -120,31 +130,43 @@ router.put('/put/:id', (req, res) => {
 
         if (updatedUserIndex !== -1) {
             fs.writeFile("./src/db/users.json", JSON.stringify(updatedUsers), (err) => {
-                if (err) return res.status(400).send({ msg: "No se pudo actualizar el usuario", err: err });
-
-                return res.send({ msg: "Usuario actualizado correctamente", data: updatedUsers[updatedUserIndex] });
+                if (err) next({status: 400, send: { msg: "No se pudo actualizar el usuario", err: err }})
+                //return res.status(400).send({ msg: "No se pudo actualizar el usuario", err: err });
+                
+                next({status: 201, send:{ msg: "Usuario actualizado correctamente", data: updatedUsers[updatedUserIndex] } })
+                //return res.send({ msg: "Usuario actualizado correctamente", data: updatedUsers[updatedUserIndex] });
             });
         } else {
-            return res.status(404).send({ msg: "Usuario no encontrado" });
+            next({status: 404, send: { msg: "Usuario no encontrado" }})
+            //return res.status(404).send({ msg: "Usuario no encontrado" });
         }
     });
 });
 
-router.post('/', (req, res) => {
-    console.log(req.body)
-    res.status(201).send(`Hello ${req.body.name} desde el body!`)
-})
 
-router.post('/hi', (req, res) => {
-    res.status(201).send('Hello World Post Router!')
-})
 
-router.put('/hi', (req, res) => {
-    res.status(201).send('Hello World Put Router!')
-})
+// router.post('/', (req, res) => {
+//     console.log(req.body)
+//     res.status(201).send(`Hello ${req.body.name} desde el body!`)
+// })
 
-router.delete('/hi', (req, res) => {
-    res.status(200).send('Hello World DeleteRouter!')
+// router.post('/hi', (req, res) => {
+//     res.status(201).send('Hello World Post Router!')
+// })
+
+// router.put('/hi', (req, res) => {
+//     res.status(201).send('Hello World Put Router!')
+// })
+
+// router.delete('/hi', (req, res) => {
+//     res.status(200).send('Hello World DeleteRouter!')
+// })
+
+router.use((req, res, next) => {
+    // if (!req.body.password || !req.body.email) {
+    // res.status(400).send({msg: "El Email y Password son requeridos"})
+    // }
+    next()
 })
 
 module.exports = router
