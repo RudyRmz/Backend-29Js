@@ -54,5 +54,13 @@
         "email": "joel@mail.com",
         "gender": "male",
         "password": "01010101"
+    },
+    {
+        "id": 17,
+        "first_name": "Gamaliel",
+        "last_name": "Cosme",
+        "email": "gama2@mail.com",
+        "gender": "male",
+        "password": "01010101"
     }
 ]
