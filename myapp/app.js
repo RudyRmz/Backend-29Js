@@ -1,11 +1,11 @@
 //routes
 const userRoutes =  require("./src/routes/user/index")
-
+const db =  require("./src/helpers/db")
 const express = require('express')
 const app = express()
 const port = 3000
 
-
+db.connect()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
