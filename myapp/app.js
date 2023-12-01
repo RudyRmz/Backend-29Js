@@ -1,5 +1,6 @@
 //routes
 const userRoutes =  require("./src/routes/user/index")
+const productRoutes = require("./src/routes/product/index")
 const db =  require("./src/helpers/db")
 const express = require('express')
 const app = express()
@@ -11,6 +12,7 @@ app.use(express.urlencoded({extended: true}))
 
 
 app.use("/user", userRoutes)
+app.use("/product", productRoutes)
 
 app.use((resp, req, res, next) => {
     res.status(resp.status).send(resp.send)

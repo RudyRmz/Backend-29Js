@@ -1,16 +1,13 @@
-// const users = "./src/db/users.json"
-// const fs = require("fs")
-
-const Users =  require("../models/users")
+const Products =  require("../models/products")
 
 module.exports = {
     getById: async (req, res, next)=>{
         const { id } = req.params
         try {
-            let users = await Users.findById(id)
-            next({ status: 200, send: { msg: "Usuario encontrado", data: users } })
+            let product = await Products.findById(id).populate("seller")
+            next({ status: 200, send: { msg: "Produto encontrado", data: product } })
         } catch (error) {
-            next({ status: 404, send: { msg: "Usuario no encontrado" } })
+            next({ status: 404, send: { msg: "Produto no encontrado" } })
         }
     // fs.readFile(users, 'utf-8', (err, users) => {
     //     if (err) next({status:400, send:{msg: "No se pudo abrir el archivo", err: err} })
@@ -41,10 +38,10 @@ module.exports = {
         //     }
         // })
         try {
-            let users = await Users.find()
-            next({ status: 200, send: { msg: "Usuarios encontrados", data: users } })
+            let products = await Products.find()
+            next({ status: 200, send: { msg: "Productos encontrados", data: products } })
         } catch (error) {
-            next({ status: 404, send: { msg: "Usuarios no encontrados" } })
+            next({ status: 404, send: { msg: "Productos no encontrados" } })
         }
     // let users = await Users.find()
     // if (!users) next({ status: 404, send: { msg: "Usuarios no encontrados" } })
@@ -81,10 +78,10 @@ module.exports = {
         // } )
         // })
         try {
-            let user = await Users.create(req.body)
-            next({ status: 201, send: { msg: "Usuario creado", data: user } })
+            let product = await Products.create(req.body)
+            next({ status: 201, send: { msg: "Producto creado", data: product } })
         } catch (error) {
-            next({ status: 400, send: { msg: "Usuario no creado", err: error} })
+            next({ status: 400, send: { msg: "Producto no creado", err: error} })
         }
         // let user = await Users.create(req.body)
         // if (!user) next({ status: 400, send: { msg: "Usuario no creado" } })
@@ -115,10 +112,10 @@ module.exports = {
     //     }
     // })
     try {
-        let users = await Users.findByIdAndDelete(id)
-        next({status: 200, send: { msg: "Usuario eliminado correctamente" }})
+        let products = await Products.findByIdAndDelete(id)
+        next({status: 200, send: { msg: "Producto eliminado correctamente" }})
     } catch (error) {
-        next({ status: 400, send: { msg: "No se pudo eliminar el usuario", err: error } })
+        next({ status: 400, send: { msg: "No se pudo eliminar el Producto", err: error } })
     }
         // let users = await Users.findByIdAndDelete(id)
         // if (!users) next({ status: 400, send: { msg: "No se pudo eliminar el usuario", err: err } })
@@ -163,18 +160,15 @@ module.exports = {
     //     }
     // });
     try {
-        let updatedUsers = await Users.findByIdAndUpdate(id, {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            gender: req.body.gender,
-            password: req.body.password
+        let updateProduct = await Products.findByIdAndUpdate(id, {
+            product_name: req.body.product_name,
+            price: req.body.price,
         },
         { new: true }
         );
-        next({ status: 201, send: { msg: "Usuario actualizado correctamente", data: updatedUsers } });
+        next({ status: 201, send: { msg: "Producto actualizado correctamente", data: updateProduct } });
     } catch (error) {
-        next({status: 400, send: { msg: "No se pudo actualizar el usuario", err: error }})
+        next({status: 400, send: { msg: "No se pudo actualizar el Producto", err: error }})
     }
     // let updatedUsers = await Users.findByIdAndUpdate(id, {
     //     first_name: req.body.first_name,
